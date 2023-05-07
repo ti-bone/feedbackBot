@@ -12,7 +12,7 @@ import (
 )
 
 func Message(b *gotgbot.Bot, ctx *ext.Context) error {
-	if ctx.EffectiveChat.Type != "private" || ctx.EffectiveSender.Id() == b.Id || ctx.EffectiveMessage.Text == "/start" {
+	if ctx.EffectiveSender.Id() == b.Id || ctx.EffectiveMessage.Text == "/start" {
 		return nil
 	}
 
@@ -28,6 +28,10 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 		}
 
 		return res.Error
+	}
+
+	if user.IsBanned {
+		return nil
 	}
 
 	if user.TopicID == 0 {
