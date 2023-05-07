@@ -14,7 +14,7 @@ func Response(b *gotgbot.Bot, ctx *ext.Context) error {
 
 	db.Connection.Where("user_id = ?", ctx.EffectiveSender.Id()).First(&senderUser)
 
-	if !senderUser.IsAdmin || senderUser.UserID != config.CurrentConfig.OwnerID || ctx.EffectiveChat.Type != "supergroup" {
+	if !senderUser.IsAdmin || senderUser.UserID != config.CurrentConfig.OwnerID {
 		return nil
 	}
 
