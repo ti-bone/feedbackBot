@@ -1,7 +1,6 @@
 package botHandlers
 
 import (
-	"feedbackBot/src/config"
 	"feedbackBot/src/db"
 	"feedbackBot/src/helpers"
 	"feedbackBot/src/models"
@@ -14,7 +13,7 @@ func Response(b *gotgbot.Bot, ctx *ext.Context) error {
 
 	db.Connection.Where("user_id = ?", ctx.EffectiveSender.Id()).First(&senderUser)
 
-	if !senderUser.IsAdmin || senderUser.UserID != config.CurrentConfig.OwnerID {
+	if !senderUser.IsAdmin {
 		return nil
 	}
 

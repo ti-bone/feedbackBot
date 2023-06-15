@@ -18,7 +18,10 @@ type Configuration struct {
 	DbDSN       string `json:"db_dsn"`
 	LogsID      int64  `json:"logs_id"`
 	LogsTopicID int64  `json:"logs_topic_id"`
-	OwnerID     int64  `json:"owner_id"`
+	Welcome     struct {
+		Enabled bool   `json:"enabled"`
+		Message string `json:"message"`
+	} `json:"welcome"`
 }
 
 var CurrentConfig Configuration

@@ -43,13 +43,20 @@ func LogUserAction(message string, b *gotgbot.Bot, ctx *ext.Context) error {
 
 	if chat.Type != "private" {
 		logMessage = fmt.Sprintf(
-			"%s\nChat Type: <code>%s</code>\nChat Name: <code>%s</code>\nChat ID: <code>%d</code>",
+			"%s\nChat Type: <code>%s</code>\nChat Name: <code>%s</code>\nChat ID: <code>%d</code>\n#ch%d",
 			logMessage,
 			html.EscapeString(chat.Type),
 			html.EscapeString(chat.Title),
 			chat.Id,
+			chat.Id,
 		)
 	}
+
+	logMessage = fmt.Sprintf(
+		"%s\n#u%d",
+		logMessage,
+		user.Id,
+	)
 
 	_, SendToLogsErr := b.SendMessage(
 		logsID,
