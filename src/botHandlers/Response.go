@@ -1,3 +1,8 @@
+/*
+ * Response.go
+ * Copyright (c) ti-bone 2023
+ */
+
 package botHandlers
 
 import (
