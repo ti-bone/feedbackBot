@@ -54,7 +54,7 @@ func getUserByID(userID int64) (*models.User, error) {
 
 	db.Connection.Where("user_id = ?", userID).First(&user)
 
-	if user == nil {
+	if user == nil || user.UserID <= 0 {
 		return nil, errors.New("-404: no user with such userid")
 	}
 
@@ -66,7 +66,7 @@ func getUserByUsername(username string) (*models.User, error) {
 
 	db.Connection.Where("username = ?", username).First(&user)
 
-	if user == nil {
+	if user == nil || user.UserID <= 0 {
 		return nil, errors.New("-404: no user with such userid")
 	}
 
