@@ -1,0 +1,10 @@
+{
+  "bot_token": "0:AA",
+  "logs_id": -100,
+  "logs_topic_id": 0,
+  "db_dsn": "host=10.10.10.2 port=5432 dbname=feedbackBot user=feedbackBot password=feedbackBot",
+  "welcome": {
+    "enabled": false,
+    "message": "Hello! Write a message and I'll send it to my owners."
+  }
+}
