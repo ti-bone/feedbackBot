@@ -54,15 +54,15 @@ func main() {
 	// Handlers
 	dispatcher := updater.Dispatcher
 
+	// Start command
+	dispatcher.AddHandler(handlers.NewCommand("start", commands.Start))
+
 	// Middleware for syncing user in DB for any update from a user
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.All, middlewares.SyncUser), -1)
 
 	dispatcher.AddHandler(handlers.NewMessage(message.Private, botHandlers.Message))
 
 	dispatcher.AddHandler(handlers.NewMessage(message.Supergroup, botHandlers.Response))
-
-	// Start command
-	dispatcher.AddHandler(handlers.NewCommand("start", commands.Start))
 
 	// Admin commands
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.All, middlewares.CheckAdmin), 1)
