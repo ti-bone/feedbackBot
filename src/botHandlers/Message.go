@@ -43,9 +43,9 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 		topic, err := b.CreateForumTopic(
 			config.CurrentConfig.LogsID,
 			fmt.Sprintf(
-				"%s [%d]",
+				"%s [*redacted*]",
 				ctx.EffectiveUser.FirstName,
-				ctx.EffectiveUser.Id,
+				//ctx.EffectiveUser.Id,
 			),
 			&gotgbot.CreateForumTopicOpts{},
 		)
@@ -63,11 +63,11 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 		_, err = b.SendMessage(
 			config.CurrentConfig.LogsID,
 			fmt.Sprintf(
-				"This topic with ID <code>%d</code> belongs to user <code>%s</code> %sID: <code>%d</code>",
+				"This topic with ID <code>%d</code> belongs to user <code>%s</code> %sID: <code>*redacted*</code>",
 				topic.MessageThreadId,
 				html.EscapeString(ctx.EffectiveUser.FirstName),
 				"<code>"+html.EscapeString(ctx.EffectiveUser.LastName)+"</code> ",
-				ctx.EffectiveUser.Id,
+				//ctx.EffectiveUser.Id,
 			),
 			&gotgbot.SendMessageOpts{
 				ParseMode:       "HTML",
@@ -102,13 +102,25 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 	)
 
 	if err != nil {
-		secondErr := helpers.LogError(err.Error(), b, ctx)
+		// Try to copyMessage
+		_, err := b.CopyMessage(
+			config.CurrentConfig.LogsID,
+			ctx.EffectiveChat.Id,
+			ctx.EffectiveMessage.MessageId,
+			&gotgbot.CopyMessageOpts{
+				MessageThreadId: user.TopicID,
+			},
+		)
 
-		if secondErr != nil {
-			return secondErr
+		if err != nil {
+			secondErr := helpers.LogError(err.Error(), b, ctx)
+
+			if secondErr != nil {
+				return secondErr
+			}
+
+			return err
 		}
-
-		return err
 	}
 
 	return nil
