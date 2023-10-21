@@ -43,9 +43,9 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 		topic, err := b.CreateForumTopic(
 			config.CurrentConfig.LogsID,
 			fmt.Sprintf(
-				"%s [*redacted*]",
+				"%s [%d]",
 				ctx.EffectiveUser.FirstName,
-				//ctx.EffectiveUser.Id,
+				ctx.EffectiveUser.Id,
 			),
 			&gotgbot.CreateForumTopicOpts{},
 		)
@@ -63,11 +63,11 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 		_, err = b.SendMessage(
 			config.CurrentConfig.LogsID,
 			fmt.Sprintf(
-				"This topic with ID <code>%d</code> belongs to user <code>%s</code> %sID: <code>*redacted*</code>",
+				"This topic with ID <code>%d</code> belongs to user <code>%s</code> %sID: <code>%d</code>",
 				topic.MessageThreadId,
 				html.EscapeString(ctx.EffectiveUser.FirstName),
 				"<code>"+html.EscapeString(ctx.EffectiveUser.LastName)+"</code> ",
-				//ctx.EffectiveUser.Id,
+				ctx.EffectiveUser.Id,
 			),
 			&gotgbot.SendMessageOpts{
 				ParseMode:       "HTML",
