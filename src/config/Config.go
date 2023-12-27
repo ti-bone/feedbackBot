@@ -49,6 +49,10 @@ func LoadConfig(filename string) {
 		panic(fmt.Sprintf("error unmarshalling config: %v", err))
 	}
 
+	if CurrentConfig.Welcome.Enabled && CurrentConfig.Welcome.Message == "" {
+		panic("[!!!CONFIGURATION ERROR!!!] Welcome message is enabled, but not set.")
+	}
+
 	log.SetOutput(os.Stdout)
 	log.Printf("Successfully loaded configuration from %s\n", filename)
 }
