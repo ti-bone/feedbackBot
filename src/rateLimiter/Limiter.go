@@ -14,13 +14,11 @@ var chats = make(map[int64]int64)
 func Check(chatId int64) bool {
 	lastRequest, exists := chats[chatId]
 
+	chats[chatId] = time.Now().Unix()
+
 	if exists && (lastRequest+10 > time.Now().Unix()) {
-		chats[chatId] = time.Now().Unix()
-
 		return false
-	} else {
-		chats[chatId] = time.Now().Unix()
-
-		return true
 	}
+
+	return true
 }
