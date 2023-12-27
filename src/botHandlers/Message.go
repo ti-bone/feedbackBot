@@ -60,14 +60,21 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 			return err
 		}
 
+		var username string
+
+		if ctx.EffectiveSender.User.Username != "" {
+			username = "\nUsername: @" + ctx.EffectiveSender.User.Username
+		}
+
 		_, err = b.SendMessage(
 			config.CurrentConfig.LogsID,
 			fmt.Sprintf(
-				"This topic with ID <code>%d</code> belongs to user <code>%s</code> %sID: <code>%d</code>",
+				"This topic with ID <code>%d</code> belongs to user <code>%s</code> %sID: <code>%d</code>%s",
 				topic.MessageThreadId,
 				html.EscapeString(ctx.EffectiveUser.FirstName),
 				"<code>"+html.EscapeString(ctx.EffectiveUser.LastName)+"</code> ",
 				ctx.EffectiveUser.Id,
+				username,
 			),
 			&gotgbot.SendMessageOpts{
 				ParseMode:       "HTML",
