@@ -14,7 +14,7 @@ import (
 
 func Start(b *gotgbot.Bot, ctx *ext.Context) error {
 	if rateLimiter.Check(ctx.EffectiveChat.Id) && config.CurrentConfig.Welcome.Enabled {
-		_, err := ctx.EffectiveMessage.Reply(b, config.CurrentConfig.Welcome.Message, &gotgbot.SendMessageOpts{})
+		_, err := ctx.EffectiveMessage.Reply(b, config.CurrentConfig.Welcome.Message, &gotgbot.SendMessageOpts{ParseMode: "HTML"})
 		return err
 	}
 
