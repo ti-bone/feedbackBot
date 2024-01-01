@@ -1,6 +1,6 @@
 /*
  * Limiter.go
- * Copyright (c) ti-bone 2023
+ * Copyright (c) ti-bone 2023-2024
  */
 
 package rateLimiter
@@ -11,10 +11,12 @@ import "time"
 var chats = make(map[int64]int64)
 
 // Check - checks if the request has made in the last 10 seconds in this chat, if so, returns false, else true
-func Check(chatId int64) bool {
+// chatId - id of the chat
+// delay - delay in seconds
+func Check(chatId int64, delay int64) bool {
 	lastRequest, exists := chats[chatId]
 
-	if exists && (lastRequest+10 > time.Now().Unix()) {
+	if exists && (lastRequest+delay > time.Now().Unix()) {
 		return false
 	}
 
