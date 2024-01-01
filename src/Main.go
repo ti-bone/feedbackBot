@@ -1,6 +1,6 @@
 /*
  * Main.go
- * Copyright (c) ti-bone 2023
+ * Copyright (c) ti-bone 2023-2024
  */
 
 package main
@@ -56,6 +56,7 @@ func main() {
 
 	// Start command
 	dispatcher.AddHandler(handlers.NewCommand("start", commands.Start))
+	dispatcher.AddHandler(handlers.NewCommand("id", commands.Id))
 
 	// Middleware for syncing user in DB for any update from a user
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.All, middlewares.SyncUser), -1)
