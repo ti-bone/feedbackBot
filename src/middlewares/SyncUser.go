@@ -1,6 +1,6 @@
 /*
  * SyncUser.go
- * Copyright (c) ti-bone 2023
+ * Copyright (c) ti-bone 2023-2024
  */
 
 package middlewares
@@ -17,7 +17,8 @@ import (
 )
 
 func SyncUser(b *gotgbot.Bot, ctx *ext.Context) error {
-	// Work with DB in another goroutine, because handlerGroup is waiting until the function returns any value before procee
+	// Work with DB in another goroutine,
+	// because handlerGroup is waiting until the function returns any value before proceed
 	go func() {
 		var id = ctx.EffectiveMessage.From.Id
 		var username = ctx.EffectiveMessage.From.Username

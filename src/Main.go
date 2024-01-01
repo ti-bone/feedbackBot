@@ -45,6 +45,13 @@ func main() {
 			// If an error is returned by a handler, log it and continue going.
 			Error: func(b *gotgbot.Bot, ctx *ext.Context, err error) ext.DispatcherAction {
 				log.Println("an error occurred while handling update:", err.Error())
+
+				// Log error to chat
+				err = helpers.LogError(err.Error(), b, ctx)
+				if err != nil {
+					log.Println("an error occurred while logging error:", err.Error())
+				}
+
 				return ext.DispatcherActionNoop
 			},
 			MaxRoutines: ext.DefaultMaxRoutines,

@@ -1,13 +1,13 @@
 /*
  * ParseInputUser.go
- * Copyright (c) ti-bone 2023
+ * Copyright (c) ti-bone 2023-2024
  */
 
 package helpers
 
 import (
-	"errors"
 	"feedbackBot/src/db"
+	"feedbackBot/src/messages"
 	"feedbackBot/src/models"
 	"strconv"
 )
@@ -27,7 +27,7 @@ func ParseInputUser(input string) (*models.User, error) {
 		userID, err := strconv.ParseInt(input[2:], 10, 64)
 
 		if err != nil {
-			return nil, errors.New("-400: invalid userid")
+			return nil, messages.UserIdInvalid
 		}
 
 		user, err := getUserByID(userID)
@@ -51,7 +51,7 @@ func ParseInputUser(input string) (*models.User, error) {
 		return user, nil
 	}
 
-	return nil, errors.New("-400: invalid userid or username")
+	return nil, messages.UserInvalid
 }
 
 func getUserByID(userID int64) (*models.User, error) {
@@ -60,7 +60,7 @@ func getUserByID(userID int64) (*models.User, error) {
 	db.Connection.Where("user_id = ?", userID).First(&user)
 
 	if user == nil || user.UserID <= 0 {
-		return nil, errors.New("-404: no user with such userid")
+		return nil, messages.UserNotFound
 	}
 
 	return user, nil
@@ -72,7 +72,7 @@ func getUserByUsername(username string) (*models.User, error) {
 	db.Connection.Where("username = ?", username).First(&user)
 
 	if user == nil || user.UserID <= 0 {
-		return nil, errors.New("-404: no user with such userid")
+		return nil, messages.UserNotFound
 	}
 
 	return user, nil

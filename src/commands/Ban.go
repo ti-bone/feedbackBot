@@ -1,6 +1,6 @@
 /*
  * Ban.go
- * Copyright (c) ti-bone 2023
+ * Copyright (c) ti-bone 2023-2024
  */
 
 package commands
@@ -8,6 +8,7 @@ package commands
 import (
 	"feedbackBot/src/db"
 	"feedbackBot/src/helpers"
+	"feedbackBot/src/messages"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
@@ -17,7 +18,7 @@ func Ban(b *gotgbot.Bot, ctx *ext.Context) error {
 	args := ctx.Args()
 
 	if len(args) <= 1 {
-		_, err := ctx.EffectiveMessage.Reply(b, "-400: user not specified.", &gotgbot.SendMessageOpts{})
+		_, err := ctx.EffectiveMessage.Reply(b, messages.UserNotSpecified.Error(), &gotgbot.SendMessageOpts{})
 		return err
 	}
 
@@ -29,7 +30,7 @@ func Ban(b *gotgbot.Bot, ctx *ext.Context) error {
 	}
 
 	if user.IsBanned {
-		_, err = ctx.EffectiveMessage.Reply(b, fmt.Sprintf("#u%d is already banned.", user.UserID), &gotgbot.SendMessageOpts{})
+		_, err = ctx.EffectiveMessage.Reply(b, messages.UserAlreadyBanned.Error(), &gotgbot.SendMessageOpts{})
 		return err
 	}
 

@@ -1,6 +1,6 @@
 /*
  * User.go
- * Copyright (c) ti-bone 2023
+ * Copyright (c) ti-bone 2023-2024
  */
 
 package models

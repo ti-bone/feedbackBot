@@ -1,6 +1,6 @@
 /*
  * Message.go
- * Copyright (c) ti-bone 2023
+ * Copyright (c) ti-bone 2023-2024
  */
 
 package botHandlers
@@ -8,7 +8,6 @@ package botHandlers
 import (
 	"feedbackBot/src/config"
 	"feedbackBot/src/db"
-	"feedbackBot/src/helpers"
 	"feedbackBot/src/models"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
@@ -17,7 +16,7 @@ import (
 )
 
 func Message(b *gotgbot.Bot, ctx *ext.Context) error {
-	if ctx.EffectiveSender.Id() == b.Id || ctx.EffectiveMessage.Text == "/start" {
+	if ctx.EffectiveSender.Id() == b.Id {
 		return nil
 	}
 
@@ -26,12 +25,6 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 	res := db.Connection.Where("user_id = ?", ctx.EffectiveUser.Id).First(&user)
 
 	if res.Error != nil {
-		err := helpers.LogError(res.Error.Error(), b, ctx)
-
-		if err != nil {
-			return err
-		}
-
 		return res.Error
 	}
 
@@ -51,12 +44,6 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 		)
 
 		if err != nil {
-			secondErr := helpers.LogError(err.Error(), b, ctx)
-
-			if secondErr != nil {
-				return secondErr
-			}
-
 			return err
 		}
 
@@ -83,22 +70,18 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 		)
 
 		if err != nil {
-			secondErr := helpers.LogError(err.Error(), b, ctx)
-
+			// Delete topic(no need for it, because first message failed to send)
 			_, _ = b.DeleteForumTopic(config.CurrentConfig.LogsID, topic.MessageThreadId, &gotgbot.DeleteForumTopicOpts{})
-
-			if secondErr != nil {
-				return secondErr
-			}
 
 			return err
 		}
 
+		// Set the topic ID to the user and write it to the DB
 		user.TopicID = topic.MessageThreadId
-
 		db.Connection.Where("user_id = ?", user.UserID).Updates(&user)
 	}
 
+	// Forward message to the user's topic
 	_, err := b.ForwardMessage(
 		config.CurrentConfig.LogsID,
 		ctx.EffectiveChat.Id,
@@ -108,9 +91,10 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 		},
 	)
 
+	// If failed, try to copy message
+	// (can be useful if the user has SCAM flag, Telegram doesn't allow to forward messages from such users
 	if err != nil {
-		// Try to copyMessage
-		_, err := b.CopyMessage(
+		_, err = b.CopyMessage(
 			config.CurrentConfig.LogsID,
 			ctx.EffectiveChat.Id,
 			ctx.EffectiveMessage.MessageId,
@@ -118,17 +102,8 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 				MessageThreadId: user.TopicID,
 			},
 		)
-
-		if err != nil {
-			secondErr := helpers.LogError(err.Error(), b, ctx)
-
-			if secondErr != nil {
-				return secondErr
-			}
-
-			return err
-		}
 	}
 
-	return nil
+	// Return error, if any
+	return err
 }

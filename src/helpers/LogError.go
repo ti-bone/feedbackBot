@@ -1,6 +1,6 @@
 /*
- * LogUserAction.go
- * Copyright (c) ti-bone 2023
+ * LogError.go
+ * Copyright (c) ti-bone 2023-2024
  */
 
 package helpers
