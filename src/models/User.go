@@ -17,4 +17,5 @@ type User struct {
 	TopicID      int64
 	IsBanned     bool
 	IsAdmin      bool
+	IsProtected  bool
 }

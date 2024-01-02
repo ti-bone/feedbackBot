@@ -70,12 +70,12 @@ func main() {
 
 	dispatcher.AddHandler(handlers.NewMessage(message.Private, botHandlers.Message))
 
-	dispatcher.AddHandler(handlers.NewMessage(message.Supergroup, botHandlers.Response))
-
 	// Admin commands
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.All, middlewares.CheckAdmin), 1)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("ban", commands.Ban), 1)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("unban", commands.Unban), 1)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("protect", commands.Protect), 1)
+	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.Supergroup, botHandlers.Response), 1)
 
 	err = updater.StartPolling(b, &ext.PollingOpts{
 		DropPendingUpdates: true,

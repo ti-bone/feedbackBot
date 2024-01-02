@@ -14,15 +14,6 @@ import (
 
 func Response(b *gotgbot.Bot, ctx *ext.Context) error {
 	var err error
-	var sender models.User
-
-	// Get sender from the DB and check it's rights
-	db.Connection.Where("user_id = ?", ctx.EffectiveSender.Id()).First(&sender)
-
-	if !sender.IsAdmin {
-		return nil
-	}
-
 	var user models.User
 
 	// Get target user from the DB by topic ID
@@ -30,7 +21,12 @@ func Response(b *gotgbot.Bot, ctx *ext.Context) error {
 
 	// If user is not found, return
 	if user.TopicID != 0 && !user.IsBanned {
-		_, err = b.CopyMessage(user.UserID, ctx.EffectiveChat.Id, ctx.EffectiveMessage.MessageId, &gotgbot.CopyMessageOpts{})
+		_, err = b.CopyMessage(
+			user.UserID,
+			ctx.EffectiveChat.Id,
+			ctx.EffectiveMessage.MessageId,
+			&gotgbot.CopyMessageOpts{ProtectContent: user.IsProtected},
+		)
 	}
 
 	return err
