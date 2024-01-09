@@ -6,5 +6,6 @@
   "welcome": {
     "enabled": false,
     "message": "Hello! Write a message and I'll send it to my owners."
-  }
+  },
+  "is_protected_default": false
 }

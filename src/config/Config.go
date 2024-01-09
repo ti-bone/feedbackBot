@@ -22,6 +22,7 @@ type Configuration struct {
 		Enabled bool   `json:"enabled"`
 		Message string `json:"message"`
 	} `json:"welcome"`
+	IsProtectedDefault bool `json:"is_protected_default"`
 }
 
 var CurrentConfig Configuration

@@ -7,6 +7,7 @@ package middlewares
 
 import (
 	"errors"
+	"feedbackBot/src/config"
 	"feedbackBot/src/db"
 	"feedbackBot/src/helpers"
 	"feedbackBot/src/models"
@@ -39,6 +40,9 @@ func SyncUser(b *gotgbot.Bot, ctx *ext.Context) error {
 		}
 
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			// Set isProtected to default value(as specified in config)
+			user.IsProtected = config.CurrentConfig.IsProtectedDefault
+
 			resIns := db.Connection.Create(&user)
 			if resIns.Error != nil {
 				fmt.Printf("failed to insert user: %v", resIns.Error.Error())
