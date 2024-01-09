@@ -6,6 +6,7 @@
 package botHandlers
 
 import (
+	"errors"
 	"feedbackBot/src/config"
 	"feedbackBot/src/db"
 	"feedbackBot/src/models"
@@ -33,52 +34,7 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 	}
 
 	if user.TopicID == 0 {
-		topic, err := b.CreateForumTopic(
-			config.CurrentConfig.LogsID,
-			fmt.Sprintf(
-				"%s [%d]",
-				ctx.EffectiveUser.FirstName,
-				ctx.EffectiveUser.Id,
-			),
-			&gotgbot.CreateForumTopicOpts{},
-		)
-
-		if err != nil {
-			return err
-		}
-
-		var username string
-
-		if ctx.EffectiveSender.User.Username != "" {
-			username = "\nUsername: @" + ctx.EffectiveSender.User.Username
-		}
-
-		_, err = b.SendMessage(
-			config.CurrentConfig.LogsID,
-			fmt.Sprintf(
-				"This topic with ID <code>%d</code> belongs to user <code>%s</code> %sID: <code>%d</code>%s",
-				topic.MessageThreadId,
-				html.EscapeString(ctx.EffectiveUser.FirstName),
-				"<code>"+html.EscapeString(ctx.EffectiveUser.LastName)+"</code> ",
-				ctx.EffectiveUser.Id,
-				username,
-			),
-			&gotgbot.SendMessageOpts{
-				ParseMode:       "HTML",
-				MessageThreadId: topic.MessageThreadId,
-			},
-		)
-
-		if err != nil {
-			// Delete topic(no need for it, because first message failed to send)
-			_, _ = b.DeleteForumTopic(config.CurrentConfig.LogsID, topic.MessageThreadId, &gotgbot.DeleteForumTopicOpts{})
-
-			return err
-		}
-
-		// Set the topic ID to the user and write it to the DB
-		user.TopicID = topic.MessageThreadId
-		db.Connection.Where("user_id = ?", user.UserID).Updates(&user)
+		return handleNoTopic(b, ctx, &user)
 	}
 
 	// Forward message to the user's topic
@@ -104,6 +60,66 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 		)
 	}
 
+	var tgErr *gotgbot.TelegramError
+
+	if errors.As(err, &tgErr) {
+		// If thread not found - try to recreate topic
+		if tgErr.Description == "Bad Request: message thread not found" {
+			err = handleNoTopic(b, ctx, &user)
+		}
+	}
+
 	// Return error, if any
+	return err
+}
+
+func handleNoTopic(b *gotgbot.Bot, ctx *ext.Context, user *models.User) error {
+	topic, err := b.CreateForumTopic(
+		config.CurrentConfig.LogsID,
+		fmt.Sprintf(
+			"%s [%d]",
+			ctx.EffectiveUser.FirstName,
+			ctx.EffectiveUser.Id,
+		),
+		&gotgbot.CreateForumTopicOpts{},
+	)
+
+	if err != nil {
+		return err
+	}
+
+	var username string
+
+	if ctx.EffectiveSender.User.Username != "" {
+		username = "\nUsername: @" + ctx.EffectiveSender.User.Username
+	}
+
+	_, err = b.SendMessage(
+		config.CurrentConfig.LogsID,
+		fmt.Sprintf(
+			"This topic with ID <code>%d</code> belongs to user <code>%s</code> %sID: <code>%d</code>%s",
+			topic.MessageThreadId,
+			html.EscapeString(ctx.EffectiveUser.FirstName),
+			"<code>"+html.EscapeString(ctx.EffectiveUser.LastName)+"</code> ",
+			ctx.EffectiveUser.Id,
+			username,
+		),
+		&gotgbot.SendMessageOpts{
+			ParseMode:       "HTML",
+			MessageThreadId: topic.MessageThreadId,
+		},
+	)
+
+	if err != nil {
+		// Delete topic(no need for it, because first message failed to send)
+		_, _ = b.DeleteForumTopic(config.CurrentConfig.LogsID, topic.MessageThreadId, &gotgbot.DeleteForumTopicOpts{})
+
+		return err
+	}
+
+	// Set the topic ID to the user and write it to the DB
+	user.TopicID = topic.MessageThreadId
+	db.Connection.Where("user_id = ?", user.UserID).Updates(&user)
+
 	return err
 }
