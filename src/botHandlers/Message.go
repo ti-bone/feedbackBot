@@ -9,11 +9,15 @@ import (
 	"errors"
 	"feedbackBot/src/config"
 	"feedbackBot/src/db"
+	"feedbackBot/src/helpers"
 	"feedbackBot/src/models"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"html"
+	"log"
+	"os"
+	"time"
 )
 
 func Message(b *gotgbot.Bot, ctx *ext.Context) error {
@@ -21,56 +25,82 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 		return nil
 	}
 
-	var user models.User
+	var handleMessage func(int) error
 
-	res := db.Connection.Where("user_id = ?", ctx.EffectiveUser.Id).First(&user)
+	handleMessage = func(depth int) error {
+		if depth > 5 {
+			// Return an error when reaching the maximum depth
+			return errors.New("maximum recursion depth reached")
+		}
 
-	if res.Error != nil {
-		return res.Error
-	}
+		var user models.User
 
-	if user.IsBanned {
-		return nil
-	}
+		res := db.Connection.Where("user_id = ?", ctx.EffectiveUser.Id).First(&user)
 
-	if user.TopicID == 0 {
-		return handleNoTopic(b, ctx, &user)
-	}
+		if res.Error != nil {
+			// Log the error to admin topic
+			err := helpers.LogError(
+				fmt.Sprintf("Got DB error: %v, retrying(attempt %d)...", res.Error, depth),
+				b, ctx,
+			)
 
-	// Forward message to the user's topic
-	_, err := b.ForwardMessage(
-		config.CurrentConfig.LogsID,
-		ctx.EffectiveChat.Id,
-		ctx.EffectiveMessage.MessageId,
-		&gotgbot.ForwardMessageOpts{
-			MessageThreadId: user.TopicID,
-		},
-	)
+			if err != nil {
+				log.SetOutput(os.Stderr)
+				log.Printf("failed to log error: %v", err.Error())
+			}
 
-	// If failed, try to copy message
-	// (can be useful if the user has SCAM flag, Telegram doesn't allow to forward messages from such users
-	if err != nil {
-		_, err = b.CopyMessage(
+			// Wait for 2s and retry
+			time.Sleep(2 * time.Second)
+
+			// Retry
+			return handleMessage(depth + 1)
+		}
+
+		if user.IsBanned {
+			return nil
+		}
+
+		if user.TopicID == 0 {
+			return handleNoTopic(b, ctx, &user)
+		}
+
+		// Forward message to the user's topic
+		_, err := b.ForwardMessage(
 			config.CurrentConfig.LogsID,
 			ctx.EffectiveChat.Id,
 			ctx.EffectiveMessage.MessageId,
-			&gotgbot.CopyMessageOpts{
+			&gotgbot.ForwardMessageOpts{
 				MessageThreadId: user.TopicID,
 			},
 		)
-	}
 
-	var tgErr *gotgbot.TelegramError
-
-	if errors.As(err, &tgErr) {
-		// If thread not found - try to recreate topic
-		if tgErr.Description == "Bad Request: message thread not found" {
-			err = handleNoTopic(b, ctx, &user)
+		// If failed, try to copy message
+		// (can be useful if the user has SCAM flag, Telegram doesn't allow to forward messages from such users
+		if err != nil {
+			_, err = b.CopyMessage(
+				config.CurrentConfig.LogsID,
+				ctx.EffectiveChat.Id,
+				ctx.EffectiveMessage.MessageId,
+				&gotgbot.CopyMessageOpts{
+					MessageThreadId: user.TopicID,
+				},
+			)
 		}
+
+		var tgErr *gotgbot.TelegramError
+
+		if errors.As(err, &tgErr) {
+			// If thread not found - try to recreate topic
+			if tgErr.Description == "Bad Request: message thread not found" {
+				err = handleNoTopic(b, ctx, &user)
+			}
+		}
+
+		// Return error, if any
+		return err
 	}
 
-	// Return error, if any
-	return err
+	return handleMessage(1)
 }
 
 func handleNoTopic(b *gotgbot.Bot, ctx *ext.Context, user *models.User) error {
