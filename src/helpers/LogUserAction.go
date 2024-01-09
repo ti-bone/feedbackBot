@@ -11,6 +11,7 @@ import (
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"html"
+	"math"
 )
 
 func LogUserAction(message string, b *gotgbot.Bot, ctx *ext.Context) error {
@@ -43,12 +44,12 @@ func LogUserAction(message string, b *gotgbot.Bot, ctx *ext.Context) error {
 
 	if chat.Type != "private" {
 		logMessage = fmt.Sprintf(
-			"%s\nChat Type: <code>%s</code>\nChat Name: <code>%s</code>\nChat ID: <code>%d</code>\n#ch%d",
+			"%s\nChat Type: <code>%s</code>\nChat Name: <code>%s</code>\nChat ID: <code>%d</code>\n#ch%.f",
 			logMessage,
 			html.EscapeString(chat.Type),
 			html.EscapeString(chat.Title),
 			chat.Id,
-			chat.Id,
+			math.Abs(float64(chat.Id)),
 		)
 	}
 
