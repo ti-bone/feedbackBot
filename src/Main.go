@@ -78,7 +78,7 @@ func main() {
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.Supergroup, botHandlers.Response), 1)
 
 	err = updater.StartPolling(b, &ext.PollingOpts{
-		DropPendingUpdates: true,
+		DropPendingUpdates: false,
 		GetUpdatesOpts: gotgbot.GetUpdatesOpts{
 			Timeout: 0,
 			RequestOpts: &gotgbot.RequestOpts{
