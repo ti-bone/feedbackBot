@@ -61,7 +61,7 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 		}
 
 		if user.TopicID == 0 {
-			return handleNoTopic(b, ctx, &user)
+			return handleNoTopic(b, ctx, &user, handleMessage, depth)
 		}
 
 		// Forward message to the user's topic
@@ -73,6 +73,15 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 				MessageThreadId: user.TopicID,
 			},
 		)
+
+		var tgErr *gotgbot.TelegramError
+
+		if errors.As(err, &tgErr) {
+			// If thread not found - try to recreate topic
+			if tgErr.Description == "Bad Request: message thread not found" {
+				return handleNoTopic(b, ctx, &user, handleMessage, depth)
+			}
+		}
 
 		// If failed, try to copy message
 		// (can be useful if the user has SCAM flag, Telegram doesn't allow to forward messages from such users
@@ -87,15 +96,6 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 			)
 		}
 
-		var tgErr *gotgbot.TelegramError
-
-		if errors.As(err, &tgErr) {
-			// If thread not found - try to recreate topic
-			if tgErr.Description == "Bad Request: message thread not found" {
-				err = handleNoTopic(b, ctx, &user)
-			}
-		}
-
 		// Return error, if any
 		return err
 	}
@@ -103,7 +103,11 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 	return handleMessage(1)
 }
 
-func handleNoTopic(b *gotgbot.Bot, ctx *ext.Context, user *models.User) error {
+func handleNoTopic(
+	b *gotgbot.Bot, ctx *ext.Context,
+	user *models.User, handleMessage func(int) error,
+	currentDepth int,
+) error {
 	topic, err := b.CreateForumTopic(
 		config.CurrentConfig.LogsID,
 		fmt.Sprintf(
@@ -151,5 +155,5 @@ func handleNoTopic(b *gotgbot.Bot, ctx *ext.Context, user *models.User) error {
 	user.TopicID = topic.MessageThreadId
 	db.Connection.Where("user_id = ?", user.UserID).Updates(&user)
 
-	return err
+	return handleMessage(currentDepth + 1)
 }
