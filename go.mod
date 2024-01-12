@@ -3,7 +3,7 @@ module feedbackBot
 go 1.20
 
 require (
-	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.20
+	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.23
 	gorm.io/driver/postgres v1.5.0
 	gorm.io/gorm v1.25.0
 )
