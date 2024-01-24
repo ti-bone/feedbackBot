@@ -13,6 +13,7 @@ import (
 	"os"
 )
 
+// Configuration - describes the configuration file
 type Configuration struct {
 	BotToken    string `json:"bot_token"`
 	DbDSN       string `json:"db_dsn"`
@@ -23,10 +24,18 @@ type Configuration struct {
 		Message string `json:"message"`
 	} `json:"welcome"`
 	IsProtectedDefault bool `json:"is_protected_default"`
+	LanguageFilter     struct {
+		Enabled            bool     `json:"enabled"`
+		ForbiddenLanguages []string `json:"forbidden_languages"`
+		Message            string   `json:"message"`
+		ErrorRateLimit     int64    `json:"error_rate_limit"`
+	} `json:"language_filter"`
 }
 
+// CurrentConfig - stores the current configuration
 var CurrentConfig Configuration
 
+// LoadConfig - loads configuration from a file and stores it in CurrentConfig
 func LoadConfig(filename string) {
 	jsonFile, err := os.Open(filename)
 	if err != nil {
@@ -50,8 +59,27 @@ func LoadConfig(filename string) {
 		panic(fmt.Sprintf("error unmarshalling config: %v", err))
 	}
 
+	// Check welcome message configuration
 	if CurrentConfig.Welcome.Enabled && CurrentConfig.Welcome.Message == "" {
 		panic("[!!!CONFIGURATION ERROR!!!] Welcome message is enabled, but not set.")
+	}
+
+	// Check language filter configuration
+	langFilterConfig := CurrentConfig.LanguageFilter
+
+	if langFilterConfig.Enabled {
+		if langFilterConfig.Message == "" {
+			panic("[!!!CONFIGURATION ERROR!!!] Language filter is enabled, but error message is not set.")
+		}
+
+		if len(langFilterConfig.ForbiddenLanguages) == 0 {
+			panic("[!!!CONFIGURATION ERROR!!!] Language filter is enabled, but no languages are set.")
+		}
+
+		if langFilterConfig.ErrorRateLimit <= 0 {
+			panic("[!!!CONFIGURATION ERROR!!!] " +
+				"Language filter is enabled, but error rate limit whether is not set, or it is negative integer.")
+		}
 	}
 
 	log.SetOutput(os.Stdout)

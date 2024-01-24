@@ -61,24 +61,40 @@ func main() {
 	// Handlers
 	updater := ext.NewUpdater(dispatcher, nil)
 
-	// Start command
-	dispatcher.AddHandler(handlers.NewCommand("start", commands.Start))
-	dispatcher.AddHandler(handlers.NewCommand("id", commands.Id))
-
 	// Middleware for syncing user in DB for any update from a user
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.All, middlewares.SyncUser), -1)
 
-	dispatcher.AddHandler(handlers.NewMessage(message.Private, botHandlers.Message))
+	/*
+	 * User handlers
+	 */
 
-	// Admin commands
+	// Middleware for language filtering
+	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.Private, middlewares.CheckLanguage), 0)
+
+	// Command handlers
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("start", commands.Start), 0)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("id", commands.Id), 0)
+
+	// Message handlers
+	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.Private, botHandlers.Message), 0)
+
+	/*
+	 * Admin handlers
+	 */
+
+	// Middleware for admin checking
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.All, middlewares.CheckAdmin), 1)
 
+	// Command handlers
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("ban", commands.Ban), 1)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("unban", commands.Unban), 1)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("protect", commands.Protect), 1)
 
+	// Topic-related handlers
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.TopicReopened, botHandlers.TopicReopened), 1)
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.TopicClosed, botHandlers.TopicClosed), 1)
+
+	// Response handler
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.Supergroup, botHandlers.Response), 1)
 
 	err = updater.StartPolling(b, &ext.PollingOpts{
