@@ -15,8 +15,10 @@ import (
 	"os"
 )
 
+// Connection - the DB connection
 var Connection *gorm.DB
 
+// Init - initializes the DB connection, auto-migrates the users table and stores the connection in Connection
 func Init() {
 	var err error
 	Connection, err = gorm.Open(postgres.Open(config.CurrentConfig.DbDSN), &gorm.Config{})

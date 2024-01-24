@@ -12,6 +12,7 @@ import (
 	"os"
 )
 
+// LogMessage - logs non-error message to the logs chat
 func LogMessage(message string, botInstance *gotgbot.Bot) {
 	targetChatId := config.CurrentConfig.LogsID
 

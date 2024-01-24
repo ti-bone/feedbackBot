@@ -15,18 +15,22 @@ import (
 	"os"
 )
 
+// GetUserByUsername - resolves a user by their username
 func GetUserByUsername(username string) (*models.User, error) {
 	return getUser("lower(username) = lower(?)", username)
 }
 
+// GetUserById - resolves a user by their userId
 func GetUserById(userId int64) (*models.User, error) {
 	return getUser("user_id = ?", userId)
 }
 
+// GetUserByTopicId - resolves a user by id of the topic they're currently assigned to
 func GetUserByTopicId(topicId int64) (*models.User, error) {
 	return getUser("topic_id = ?", topicId)
 }
 
+// getUser - resolves a user by a query, used internally by package
 func getUser(query interface{}, value ...interface{}) (*models.User, error) {
 	var user models.User
 

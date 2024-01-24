@@ -14,6 +14,7 @@ import (
 	"math"
 )
 
+// LogError - logs error to the logs chat
 func LogError(error string, b *gotgbot.Bot, ctx *ext.Context) error {
 	user := ctx.EffectiveUser
 	chat := ctx.EffectiveChat

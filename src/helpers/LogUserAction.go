@@ -14,6 +14,7 @@ import (
 	"math"
 )
 
+// LogUserAction - logs user's action to the logs chat
 func LogUserAction(message string, b *gotgbot.Bot, ctx *ext.Context) error {
 	user := ctx.EffectiveUser
 	chat := ctx.EffectiveChat
