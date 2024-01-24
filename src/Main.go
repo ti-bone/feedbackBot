@@ -72,9 +72,13 @@ func main() {
 
 	// Admin commands
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.All, middlewares.CheckAdmin), 1)
+
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("ban", commands.Ban), 1)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("unban", commands.Unban), 1)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("protect", commands.Protect), 1)
+
+	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.TopicReopened, botHandlers.TopicReopened), 1)
+	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.TopicClosed, botHandlers.TopicClosed), 1)
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.Supergroup, botHandlers.Response), 1)
 
 	err = updater.StartPolling(b, &ext.PollingOpts{

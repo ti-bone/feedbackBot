@@ -7,15 +7,15 @@ package botHandlers
 
 import (
 	"feedbackBot/src/db"
-	"feedbackBot/src/helpers"
 	"feedbackBot/src/models"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
+	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers/filters/message"
 )
 
 func Response(b *gotgbot.Bot, ctx *ext.Context) error {
-	// Check if message is service one
-	if helpers.IsServiceMessage(ctx) {
+	// Check if the message is a service message, describing topic action
+	if message.TopicAction(ctx.EffectiveMessage) {
 		return nil
 	}
 

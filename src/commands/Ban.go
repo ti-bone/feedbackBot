@@ -6,7 +6,7 @@
 package commands
 
 import (
-	"feedbackBot/src/db"
+	"errors"
 	"feedbackBot/src/helpers"
 	"feedbackBot/src/messages"
 	"fmt"
@@ -29,13 +29,13 @@ func Ban(b *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	if user.IsBanned {
-		_, err = ctx.EffectiveMessage.Reply(b, messages.UserAlreadyBanned.Error(), &gotgbot.SendMessageOpts{})
+	err = helpers.BanUser(user)
+
+	if err != nil && errors.Is(err, messages.UserAlreadyBanned) {
+		_, err = ctx.EffectiveMessage.Reply(b, err.Error(), &gotgbot.SendMessageOpts{})
+	} else if err != nil {
 		return err
 	}
-
-	user.IsBanned = true
-	db.Connection.Updates(&user)
 
 	_, err = ctx.EffectiveMessage.Reply(b, fmt.Sprintf("#u%d has been banned.", user.UserID), &gotgbot.SendMessageOpts{})
 	return err
