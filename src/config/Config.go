@@ -30,6 +30,7 @@ type Configuration struct {
 		Message            string   `json:"message"`
 		ErrorRateLimit     int64    `json:"error_rate_limit"`
 	} `json:"language_filter"`
+	DiscloseErrorInternals bool `json:"disclose_error_internals"`
 }
 
 // CurrentConfig - stores the current configuration

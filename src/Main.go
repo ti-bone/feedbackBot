@@ -11,6 +11,7 @@ import (
 	"feedbackBot/src/config"
 	"feedbackBot/src/db"
 	"feedbackBot/src/helpers"
+	"feedbackBot/src/messages"
 	"feedbackBot/src/middlewares"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
@@ -48,7 +49,13 @@ func main() {
 			log.Println("an error occurred while handling update:", err.Error())
 
 			// Log error to chat
-			err = helpers.LogError(err.Error(), b, ctx)
+			errorText := messages.InternalError.Error()
+
+			if config.CurrentConfig.DiscloseErrorInternals {
+				errorText = err.Error()
+			}
+
+			err = helpers.LogError(errorText, b, ctx)
 			if err != nil {
 				log.Println("an error occurred while logging error:", err.Error())
 			}

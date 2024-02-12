@@ -13,5 +13,6 @@
         "forbidden_languages": ["en", "ru"],
         "message": "Sorry, but I can't assist you because of your Telegram's language.",
         "error_rate_limit": 60
-    }
+    },
+  "disclose_error_internals": false,
 }
