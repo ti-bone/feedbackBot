@@ -20,7 +20,7 @@ func Protect(b *gotgbot.Bot, ctx *ext.Context) error {
 	// Resolve user
 	user, err := helpers.ResolveUser(ctx, b)
 
-	if err != nil {
+	if err != nil || user == nil {
 		return err
 	}
 
