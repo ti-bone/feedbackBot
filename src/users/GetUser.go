@@ -19,7 +19,7 @@ import (
 func getUser(query interface{}, value ...interface{}) (*models.User, error) {
 	var user models.User
 
-	res := db.Connection.Where(query, value).First(&user)
+	res := db.Connection.Where(query, value...).First(&user)
 
 	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 		return nil, constants.UserNotFound
