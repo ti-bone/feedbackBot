@@ -49,7 +49,7 @@ func GetNotes(user *models.User) ([]*models.Note, error) {
 
 	res := db.Connection.Where("user_id = ?", user.UserId).Find(&notes)
 
-	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+	if errors.Is(res.Error, gorm.ErrRecordNotFound) || len(notes) == 0 {
 		return nil, constants.NotesNotFound
 	}
 
