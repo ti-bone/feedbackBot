@@ -111,9 +111,9 @@ func main() {
 	err = updater.StartPolling(b, &ext.PollingOpts{
 		DropPendingUpdates: false,
 		GetUpdatesOpts: &gotgbot.GetUpdatesOpts{
-			Timeout: 0,
+			Timeout: 60,
 			RequestOpts: &gotgbot.RequestOpts{
-				Timeout: time.Second * 10,
+				Timeout: time.Second * 70,
 			},
 		},
 	})
