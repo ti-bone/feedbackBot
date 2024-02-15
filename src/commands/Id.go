@@ -6,7 +6,7 @@
 package commands
 
 import (
-	"feedbackBot/src/rateLimiter"
+	"feedbackBot/src/rates"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
@@ -15,7 +15,7 @@ import (
 func Id(b *gotgbot.Bot, ctx *ext.Context) error {
 	var err error
 	// Check if chat is not rate-limited
-	if rateLimiter.Check(ctx.EffectiveChat.Id, 60) {
+	if rates.Check(ctx.EffectiveChat.Id, 60) {
 		// Send message with ID
 		_, err = ctx.EffectiveMessage.Reply(
 			b,

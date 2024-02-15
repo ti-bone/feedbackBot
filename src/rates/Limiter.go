@@ -3,7 +3,7 @@
  * Copyright (c) ti-bone 2023-2024
  */
 
-package rateLimiter
+package rates
 
 import "time"
 

@@ -7,7 +7,7 @@ package middlewares
 
 import (
 	"feedbackBot/src/config"
-	"feedbackBot/src/rateLimiter"
+	"feedbackBot/src/rates"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"gorm.io/gorm/utils"
@@ -24,7 +24,7 @@ func CheckLanguage(b *gotgbot.Bot, ctx *ext.Context) error {
 
 	if utils.Contains(filterConfig.ForbiddenLanguages, userLanguage) {
 		// If the filter matches, rate-limit the user for config-specified time
-		if !rateLimiter.Check(ctx.EffectiveChat.Id, filterConfig.ErrorRateLimit) {
+		if !rates.Check(ctx.EffectiveChat.Id, filterConfig.ErrorRateLimit) {
 			return ext.EndGroups // Stop handling this update
 		}
 
