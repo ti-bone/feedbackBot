@@ -97,6 +97,10 @@ func main() {
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("unban", commands.Unban), 1)
 	dispatcher.AddHandlerToGroup(handlers.NewCommand("protect", commands.Protect), 1)
 
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("add", commands.AddNote), 1)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("del", commands.DelNote), 1)
+	dispatcher.AddHandlerToGroup(handlers.NewCommand("get", commands.GetNotes), 1)
+
 	// Topic-related handlers
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.TopicReopened, botHandlers.TopicReopened), 1)
 	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.TopicClosed, botHandlers.TopicClosed), 1)
