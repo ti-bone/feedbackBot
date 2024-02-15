@@ -15,7 +15,7 @@ import (
 	"os"
 )
 
-// getUser - resolves a user by a query, used internally by package
+// getUser - resolves a user by a query, used internally in package
 func getUser(query interface{}, value ...interface{}) (*models.User, error) {
 	var user models.User
 
