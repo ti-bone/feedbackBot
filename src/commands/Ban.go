@@ -32,7 +32,7 @@ func Ban(b *gotgbot.Bot, ctx *ext.Context) error {
 
 	_, err = ctx.EffectiveMessage.Reply(
 		b,
-		fmt.Sprintf("#u%d has been banned.", user.UserID),
+		fmt.Sprintf("#u%d has been banned.", user.UserId),
 		&gotgbot.SendMessageOpts{},
 	)
 

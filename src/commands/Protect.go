@@ -46,7 +46,7 @@ func Protect(b *gotgbot.Bot, ctx *ext.Context) error {
 	}
 
 	// Send the result text to the user
-	_, err = ctx.EffectiveMessage.Reply(b, fmt.Sprintf(constants.Protected, result, user.UserID), &gotgbot.SendMessageOpts{})
+	_, err = ctx.EffectiveMessage.Reply(b, fmt.Sprintf(constants.Protected, result, user.UserId), &gotgbot.SendMessageOpts{})
 
 	return err
 }

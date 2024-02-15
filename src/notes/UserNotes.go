@@ -27,8 +27,8 @@ func AddNote(user *models.User, text string, addedBy *models.User) (uint, error)
 
 	// Add note
 	note := models.Note{
-		UserID:    user.UserID,
-		AddedByID: addedBy.UserID,
+		UserId:    user.UserId,
+		AddedById: addedBy.UserId,
 		Text:      text,
 	}
 
@@ -47,7 +47,7 @@ func AddNote(user *models.User, text string, addedBy *models.User) (uint, error)
 func GetNotes(user *models.User) ([]*models.Note, error) {
 	var notes []*models.Note
 
-	res := db.Connection.Where("user_id = ?", user.UserID).Find(&notes)
+	res := db.Connection.Where("user_id = ?", user.UserId).Find(&notes)
 
 	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 		return nil, constants.NotesNotFound

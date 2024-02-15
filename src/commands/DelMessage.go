@@ -36,7 +36,7 @@ func DelMessage(b *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	_, err = b.DeleteMessage(message.UserID, message.UserMessageId, &gotgbot.DeleteMessageOpts{})
+	_, err = b.DeleteMessage(message.UserId, message.UserMessageId, &gotgbot.DeleteMessageOpts{})
 
 	// If delete failed due to message not found - output error message and return
 	var tgErr *gotgbot.TelegramError
@@ -60,7 +60,7 @@ func DelMessage(b *gotgbot.Bot, ctx *ext.Context) error {
 		b,
 		fmt.Sprintf(
 			constants.MessageDeleted,
-			message.UserMessageId, message.UserID,
+			message.UserMessageId, message.UserId,
 		),
 		&gotgbot.SendMessageOpts{},
 	)

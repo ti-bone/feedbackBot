@@ -54,7 +54,7 @@ func AddNote(b *gotgbot.Bot, ctx *ext.Context) error {
 
 	_, err = ctx.EffectiveMessage.Reply(
 		b,
-		fmt.Sprintf(constants.NoteAdded, noteId, user.UserID),
+		fmt.Sprintf(constants.NoteAdded, noteId, user.UserId),
 		&gotgbot.SendMessageOpts{},
 	)
 

@@ -13,7 +13,7 @@ import (
 
 func BanUser(user *models.User) error {
 	// Get user from the DB
-	db.Connection.Where("user_id = ?", user.UserID).First(&user)
+	db.Connection.Where("user_id = ?", user.UserId).First(&user)
 
 	// Check if user is already banned
 	if user.IsBanned {
@@ -27,7 +27,7 @@ func BanUser(user *models.User) error {
 
 func UnbanUser(user *models.User) error {
 	// Get user from the DB
-	db.Connection.Where("user_id = ?", user.UserID).First(&user)
+	db.Connection.Where("user_id = ?", user.UserId).First(&user)
 
 	// Check if user is not banned
 	if !user.IsBanned {

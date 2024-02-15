@@ -29,9 +29,9 @@ func Response(b *gotgbot.Bot, ctx *ext.Context) error {
 	db.Connection.Where("topic_id = ?", ctx.EffectiveMessage.MessageThreadId).First(&user)
 
 	// If user is not found, return
-	if user.TopicID != 0 && !user.IsBanned {
+	if user.TopicId != 0 && !user.IsBanned {
 		id, err := b.CopyMessage(
-			user.UserID,
+			user.UserId,
 			ctx.EffectiveChat.Id,
 			ctx.EffectiveMessage.MessageId,
 			&gotgbot.CopyMessageOpts{ProtectContent: user.IsProtected},
@@ -53,7 +53,7 @@ func Response(b *gotgbot.Bot, ctx *ext.Context) error {
 		// Save the message identifiers relation
 		return messages.StoreMessage(
 			models.Message{
-				UserID:           user.UserID,
+				UserId:           user.UserId,
 				UserMessageId:    id.MessageId,
 				SupportMessageId: ctx.EffectiveMessage.MessageId,
 				SupportChatId:    ctx.EffectiveChat.Id,

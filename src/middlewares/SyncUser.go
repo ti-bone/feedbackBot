@@ -32,7 +32,7 @@ func SyncUser(b *gotgbot.Bot, ctx *ext.Context) error {
 		res := db.Connection.Where("user_id = ?", id).First(&user)
 
 		user = models.User{
-			UserID:       id,
+			UserId:       id,
 			Username:     username,
 			FirstName:    firstName,
 			LastName:     lastName,
@@ -53,7 +53,7 @@ func SyncUser(b *gotgbot.Bot, ctx *ext.Context) error {
 				fmt.Printf("failed to send message to the logs: %v", err.Error())
 			}
 		} else {
-			resUpd := db.Connection.Where("user_id = ?", user.UserID).Updates(&user)
+			resUpd := db.Connection.Where("user_id = ?", user.UserId).Updates(&user)
 			if resUpd.Error != nil {
 				fmt.Printf("failed to update user: %v", resUpd.Error.Error())
 			}

@@ -9,7 +9,7 @@ import "gorm.io/gorm"
 
 type Note struct {
 	gorm.Model
-	UserID    int64
-	AddedByID int64
+	UserId    int64
+	AddedById int64
 	Text      string
 }

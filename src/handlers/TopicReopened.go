@@ -32,7 +32,7 @@ func TopicReopened(b *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	helpers.LogMessage(fmt.Sprintf("Ban lifted from #u%d. Reason: topic with user reopened.", user.UserID), b)
+	helpers.LogMessage(fmt.Sprintf("Ban lifted from #u%d. Reason: topic with user reopened.", user.UserId), b)
 
 	return nil
 }

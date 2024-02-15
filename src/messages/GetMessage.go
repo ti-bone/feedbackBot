@@ -30,7 +30,7 @@ func getMessage(query interface{}, value ...interface{}) (*models.Message, error
 		return nil, constants.InternalError
 	}
 
-	if message.UserID <= 0 {
+	if message.UserId <= 0 {
 		return nil, constants.MessageNotFound
 	}
 

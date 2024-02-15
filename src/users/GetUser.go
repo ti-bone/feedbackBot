@@ -30,7 +30,7 @@ func getUser(query interface{}, value ...interface{}) (*models.User, error) {
 		return nil, constants.InternalError
 	}
 
-	if user.UserID <= 0 {
+	if user.UserId <= 0 {
 		return nil, constants.UserNotFound
 	}
 

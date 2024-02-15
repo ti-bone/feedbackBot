@@ -61,7 +61,7 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 			return nil
 		}
 
-		if user.TopicID == 0 {
+		if user.TopicId == 0 {
 			return handleNoTopic(b, ctx, &user, handleMessage, depth)
 		}
 
@@ -73,12 +73,12 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 			ctx.EffectiveChat.Id,
 			ctx.EffectiveMessage.MessageId,
 			&gotgbot.ForwardMessageOpts{
-				MessageThreadId: user.TopicID,
+				MessageThreadId: user.TopicId,
 			},
 		)
 
 		message := models.Message{
-			UserID:        user.UserID,
+			UserId:        user.UserId,
 			UserMessageId: ctx.EffectiveMessage.MessageId,
 			SupportChatId: config.CurrentConfig.LogsID,
 			IsOutgoing:    false,
@@ -106,7 +106,7 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 				ctx.EffectiveChat.Id,
 				ctx.EffectiveMessage.MessageId,
 				&gotgbot.CopyMessageOpts{
-					MessageThreadId: user.TopicID,
+					MessageThreadId: user.TopicId,
 				},
 			)
 
@@ -173,8 +173,8 @@ func handleNoTopic(
 	}
 
 	// Set the topic ID to the user and write it to the DB
-	user.TopicID = topic.MessageThreadId
-	db.Connection.Where("user_id = ?", user.UserID).Updates(&user)
+	user.TopicId = topic.MessageThreadId
+	db.Connection.Where("user_id = ?", user.UserId).Updates(&user)
 
 	return handleMessage(currentDepth + 1)
 }

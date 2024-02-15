@@ -29,6 +29,6 @@ func Unban(b *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	_, err = ctx.EffectiveMessage.Reply(b, fmt.Sprintf("Ban lifted from #u%d.", user.UserID), &gotgbot.SendMessageOpts{})
+	_, err = ctx.EffectiveMessage.Reply(b, fmt.Sprintf("Ban lifted from #u%d.", user.UserId), &gotgbot.SendMessageOpts{})
 	return err
 }

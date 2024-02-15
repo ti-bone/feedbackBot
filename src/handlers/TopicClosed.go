@@ -32,7 +32,7 @@ func TopicClosed(b *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	helpers.LogMessage(fmt.Sprintf("#u%d has been banned. Reason: topic with user closed.", user.UserID), b)
+	helpers.LogMessage(fmt.Sprintf("#u%d has been banned. Reason: topic with user closed.", user.UserId), b)
 
 	return nil
 }

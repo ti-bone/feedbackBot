@@ -17,11 +17,11 @@ func GenerateNotesMessage(notes []*models.Note) string {
 		return constants.InternalError.Error()
 	}
 
-	text := fmt.Sprintf("Notes for #u%d:", notes[0].UserID)
+	text := fmt.Sprintf("Notes for #u%d:", notes[0].UserId)
 	for _, note := range notes {
 		text += fmt.Sprintf(
 			"\n#n%d(by #u%d): <code>%s</code>",
-			note.ID, note.AddedByID,
+			note.ID, note.AddedById,
 			html.EscapeString(note.Text),
 		)
 	}
