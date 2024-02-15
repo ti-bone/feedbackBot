@@ -8,13 +8,13 @@ package helpers
 import (
 	"feedbackBot/src/messages"
 	"feedbackBot/src/models"
-	"feedbackBot/users"
+	users2 "feedbackBot/src/users"
 	"strconv"
 )
 
 func ParseInputUser(input string) (*models.User, error) {
 	if userId, err := strconv.ParseInt(input, 10, 64); err == nil {
-		user, err := users.GetUserById(userId)
+		user, err := users2.GetUserById(userId)
 
 		if err != nil {
 			return nil, err
@@ -34,7 +34,7 @@ func ParseInputUser(input string) (*models.User, error) {
 			return nil, messages.UserIdInvalid
 		}
 
-		user, err := users.GetUserById(userId)
+		user, err := users2.GetUserById(userId)
 
 		if err != nil {
 			return nil, err
@@ -46,7 +46,7 @@ func ParseInputUser(input string) (*models.User, error) {
 	if input[0] == '@' {
 		username := input[1:]
 
-		user, err := users.GetUserByUsername(username)
+		user, err := users2.GetUserByUsername(username)
 
 		if err != nil {
 			return nil, err

@@ -9,7 +9,7 @@ import (
 	"feedbackBot/src/helpers"
 	"feedbackBot/src/messages"
 	"feedbackBot/src/notes"
-	"feedbackBot/users"
+	"feedbackBot/src/users"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"

@@ -7,7 +7,7 @@ package helpers
 
 import (
 	"feedbackBot/src/models"
-	"feedbackBot/users"
+	"feedbackBot/src/users"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 )
