@@ -11,3 +11,5 @@ const Disabled = "disabled"
 
 const NoteAdded = "Note added(#n%d) for #u%d"
 const NoteDeleted = "Note #n%d deleted"
+
+const MessageDeleted = "Message #m%d in #u%d has been deleted."

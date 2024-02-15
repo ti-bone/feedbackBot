@@ -101,6 +101,8 @@ func main() {
 	dispatcher.AddHandlerToGroup(updateHandlers.NewCommand("del", commands.DelNote), 1)
 	dispatcher.AddHandlerToGroup(updateHandlers.NewCommand("get", commands.GetNotes), 1)
 
+	dispatcher.AddHandlerToGroup(updateHandlers.NewCommand("mdel", commands.DelMessage), 1)
+
 	// Topic-related handlers
 	dispatcher.AddHandlerToGroup(updateHandlers.NewMessage(message.TopicReopened, handlers.TopicReopened), 1)
 	dispatcher.AddHandlerToGroup(updateHandlers.NewMessage(message.TopicClosed, handlers.TopicClosed), 1)
