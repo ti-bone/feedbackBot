@@ -45,6 +45,7 @@ func Response(b *gotgbot.Bot, ctx *ext.Context) error {
 				UserID:           user.UserID,
 				UserMessageId:    id.MessageId,
 				SupportMessageId: ctx.EffectiveMessage.MessageId,
+				SupportChatId:    ctx.EffectiveChat.Id,
 				IsOutgoing:       true,
 			},
 		)

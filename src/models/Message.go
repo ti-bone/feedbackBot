@@ -12,5 +12,6 @@ type Message struct {
 	UserID           int64
 	UserMessageId    int64
 	SupportMessageId int64
+	SupportChatId    int64
 	IsOutgoing       bool
 }
