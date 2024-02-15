@@ -84,6 +84,7 @@ func main() {
 
 	// Message handlers
 	dispatcher.AddHandlerToGroup(updateHandlers.NewMessage(message.Private, handlers.Message), 0)
+	dispatcher.AddHandlerToGroup(NewReaction(true, handlers.Reaction), 0)
 
 	/*
 	 * Admin handlers
@@ -117,6 +118,7 @@ func main() {
 			RequestOpts: &gotgbot.RequestOpts{
 				Timeout: time.Second * 70,
 			},
+			AllowedUpdates: []string{"message", "edited_message", "message_reaction", "my_chat_member"},
 		},
 	})
 	if err != nil {
