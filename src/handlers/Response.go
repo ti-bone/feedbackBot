@@ -40,7 +40,6 @@ func Response(b *gotgbot.Bot, ctx *ext.Context) error {
 		var tgErr *gotgbot.TelegramError
 
 		if errors.As(err, &tgErr) {
-			// If thread not found - try to recreate topic
 			if tgErr.Description == "Forbidden: bot was blocked by the user" {
 				_, err = ctx.EffectiveMessage.Reply(b, constants.BotUserBlocked.Error(), &gotgbot.SendMessageOpts{})
 				return err
