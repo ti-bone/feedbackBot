@@ -14,6 +14,7 @@ import (
 
 func Start(b *gotgbot.Bot, ctx *ext.Context) error {
 	var err error
+
 	// Check if user is not rate-limited and welcome message is enabled
 	if rateLimiter.Check(ctx.EffectiveChat.Id, 10) && config.CurrentConfig.Welcome.Enabled {
 		// Send welcome message

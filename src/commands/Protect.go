@@ -6,11 +6,9 @@
 package commands
 
 import (
-	"feedbackBot/src/config"
 	"feedbackBot/src/db"
 	"feedbackBot/src/helpers"
 	"feedbackBot/src/messages"
-	"feedbackBot/src/models"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
@@ -19,39 +17,11 @@ import (
 )
 
 func Protect(b *gotgbot.Bot, ctx *ext.Context) error {
-	args := ctx.Args()
-	topicId := ctx.EffectiveMessage.MessageThreadId
-	isValidTopicMessage := topicId != 0 && topicId != config.CurrentConfig.LogsTopicID
+	// Resolve user
+	user, err := helpers.ResolveUser(ctx, b)
 
-	if !isValidTopicMessage && len(args) <= 1 {
-		_, err := ctx.EffectiveMessage.Reply(
-			b,
-			messages.UserNotSpecified.Error()+"\nHint: you can send this command to any user-related topic.",
-			&gotgbot.SendMessageOpts{},
-		)
-
+	if err != nil {
 		return err
-	}
-
-	var user *models.User
-	var err error
-
-	// Try to resolve user by topic ID
-	if isValidTopicMessage {
-		user, err = helpers.GetUserByTopicId(topicId)
-
-		if err != nil {
-			_, err := ctx.EffectiveMessage.Reply(b, err.Error(), &gotgbot.SendMessageOpts{})
-			return err
-		}
-	} else {
-		// args[1] is 146% existing, because we checked it above
-		user, err = helpers.ParseInputUser(args[1])
-
-		if err != nil {
-			_, err := ctx.EffectiveMessage.Reply(b, err.Error(), &gotgbot.SendMessageOpts{})
-			return err
-		}
 	}
 
 	var result string

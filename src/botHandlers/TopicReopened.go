@@ -9,13 +9,14 @@ import (
 	"errors"
 	"feedbackBot/src/helpers"
 	"feedbackBot/src/messages"
+	"feedbackBot/users"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 )
 
 func TopicReopened(b *gotgbot.Bot, ctx *ext.Context) error {
-	user, err := helpers.GetUserByTopicId(ctx.EffectiveMessage.MessageThreadId)
+	user, err := users.GetUserByTopicId(ctx.EffectiveMessage.MessageThreadId)
 
 	if err != nil && errors.Is(err, messages.UserNotFound) {
 		return nil
