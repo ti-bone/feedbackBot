@@ -7,8 +7,8 @@ package botHandlers
 
 import (
 	"errors"
+	"feedbackBot/src/constants"
 	"feedbackBot/src/helpers"
-	"feedbackBot/src/messages"
 	"feedbackBot/src/users"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
@@ -18,7 +18,7 @@ import (
 func TopicReopened(b *gotgbot.Bot, ctx *ext.Context) error {
 	user, err := users.GetUserByTopicId(ctx.EffectiveMessage.MessageThreadId)
 
-	if err != nil && errors.Is(err, messages.UserNotFound) {
+	if err != nil && errors.Is(err, constants.UserNotFound) {
 		return nil
 	} else if err != nil {
 		return err
@@ -26,7 +26,7 @@ func TopicReopened(b *gotgbot.Bot, ctx *ext.Context) error {
 
 	err = helpers.UnbanUser(user)
 
-	if err != nil && errors.Is(err, messages.UserNotBanned) {
+	if err != nil && errors.Is(err, constants.UserNotBanned) {
 		return nil
 	} else if err != nil {
 		return err

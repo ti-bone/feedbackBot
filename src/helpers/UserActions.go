@@ -6,8 +6,8 @@
 package helpers
 
 import (
+	"feedbackBot/src/constants"
 	"feedbackBot/src/db"
-	"feedbackBot/src/messages"
 	"feedbackBot/src/models"
 )
 
@@ -17,7 +17,7 @@ func BanUser(user *models.User) error {
 
 	// Check if user is already banned
 	if user.IsBanned {
-		return messages.UserAlreadyBanned
+		return constants.UserAlreadyBanned
 	}
 
 	db.Connection.Model(&user).Update("is_banned", true)
@@ -31,7 +31,7 @@ func UnbanUser(user *models.User) error {
 
 	// Check if user is not banned
 	if !user.IsBanned {
-		return messages.UserNotBanned
+		return constants.UserNotBanned
 	}
 
 	db.Connection.Model(&user).Update("is_banned", false)

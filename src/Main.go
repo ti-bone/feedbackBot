@@ -9,9 +9,9 @@ import (
 	"feedbackBot/src/botHandlers"
 	"feedbackBot/src/commands"
 	"feedbackBot/src/config"
+	"feedbackBot/src/constants"
 	"feedbackBot/src/db"
 	"feedbackBot/src/helpers"
-	"feedbackBot/src/messages"
 	"feedbackBot/src/middlewares"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
@@ -49,7 +49,7 @@ func main() {
 			log.Println("an error occurred while handling update:", err.Error())
 
 			// Log error to chat
-			errorText := messages.InternalError.Error()
+			errorText := constants.InternalError.Error()
 
 			if config.CurrentConfig.DiscloseErrorInternals {
 				errorText = err.Error()

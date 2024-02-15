@@ -7,8 +7,8 @@ package botHandlers
 
 import (
 	"errors"
+	"feedbackBot/src/constants"
 	"feedbackBot/src/helpers"
-	"feedbackBot/src/messages"
 	"feedbackBot/src/users"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
@@ -18,7 +18,7 @@ import (
 func TopicClosed(b *gotgbot.Bot, ctx *ext.Context) error {
 	user, err := users.GetUserByTopicId(ctx.EffectiveMessage.MessageThreadId)
 
-	if err != nil && errors.Is(err, messages.UserNotFound) {
+	if err != nil && errors.Is(err, constants.UserNotFound) {
 		return nil
 	} else if err != nil {
 		return err
@@ -26,7 +26,7 @@ func TopicClosed(b *gotgbot.Bot, ctx *ext.Context) error {
 
 	err = helpers.BanUser(user)
 
-	if err != nil && errors.Is(err, messages.UserAlreadyBanned) {
+	if err != nil && errors.Is(err, constants.UserAlreadyBanned) {
 		return nil
 	} else if err != nil {
 		return err

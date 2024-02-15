@@ -6,7 +6,7 @@
 package helpers
 
 import (
-	"feedbackBot/src/messages"
+	"feedbackBot/src/constants"
 )
 
 func ParseNoteId(input string) (uint, error) {
@@ -18,11 +18,11 @@ func ParseNoteId(input string) (uint, error) {
 		noteId, err := ParseUint(input[2:])
 
 		if err != nil {
-			return 0, messages.NoteIdInvalid
+			return 0, constants.NoteIdInvalid
 		}
 
 		return noteId, nil
 	}
 
-	return 0, messages.NoteIdInvalid
+	return 0, constants.NoteIdInvalid
 }

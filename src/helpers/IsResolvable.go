@@ -7,7 +7,7 @@ package helpers
 
 import (
 	"feedbackBot/src/config"
-	"feedbackBot/src/messages"
+	"feedbackBot/src/constants"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 )
@@ -20,7 +20,7 @@ func IsResolvable(ctx *ext.Context, b *gotgbot.Bot) (bool, bool, error) {
 	if !isValidTopicMessage && len(args) <= 1 {
 		_, err := ctx.EffectiveMessage.Reply(
 			b,
-			messages.UserNotSpecified.Error()+"\nHint: you can send this command to any user-related topic.",
+			constants.UserNotSpecified.Error()+"\nHint: you can send this command to any user-related topic.",
 			&gotgbot.SendMessageOpts{},
 		)
 

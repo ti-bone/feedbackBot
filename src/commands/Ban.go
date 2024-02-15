@@ -7,8 +7,8 @@ package commands
 
 import (
 	"errors"
+	"feedbackBot/src/constants"
 	"feedbackBot/src/helpers"
-	"feedbackBot/src/messages"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
@@ -24,7 +24,7 @@ func Ban(b *gotgbot.Bot, ctx *ext.Context) error {
 
 	err = helpers.BanUser(user)
 
-	if errors.Is(err, messages.UserAlreadyBanned) {
+	if errors.Is(err, constants.UserAlreadyBanned) {
 		_, err = ctx.EffectiveMessage.Reply(b, err.Error(), &gotgbot.SendMessageOpts{})
 	} else if err != nil {
 		return err

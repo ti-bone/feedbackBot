@@ -7,8 +7,8 @@ package users
 
 import (
 	"errors"
+	"feedbackBot/src/constants"
 	"feedbackBot/src/db"
-	"feedbackBot/src/messages"
 	"feedbackBot/src/models"
 	"gorm.io/gorm"
 	"log"
@@ -22,16 +22,16 @@ func getUser(query interface{}, value ...interface{}) (*models.User, error) {
 	res := db.Connection.Where(query, value).First(&user)
 
 	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-		return nil, messages.UserNotFound
+		return nil, constants.UserNotFound
 	} else if res.Error != nil {
 		log.SetOutput(os.Stderr)
 		log.Println(res.Error)
 
-		return nil, messages.InternalError
+		return nil, constants.InternalError
 	}
 
 	if user.UserID <= 0 {
-		return nil, messages.UserNotFound
+		return nil, constants.UserNotFound
 	}
 
 	return &user, nil

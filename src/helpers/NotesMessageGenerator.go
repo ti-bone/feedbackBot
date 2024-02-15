@@ -6,7 +6,7 @@
 package helpers
 
 import (
-	"feedbackBot/src/messages"
+	"feedbackBot/src/constants"
 	"feedbackBot/src/models"
 	"fmt"
 	"html"
@@ -14,7 +14,7 @@ import (
 
 func GenerateNotesMessage(notes []*models.Note) string {
 	if len(notes) == 0 {
-		return messages.InternalError.Error()
+		return constants.InternalError.Error()
 	}
 
 	text := fmt.Sprintf("Notes for #u%d:", notes[0].UserID)

@@ -6,7 +6,7 @@
 package helpers
 
 import (
-	"feedbackBot/src/messages"
+	"feedbackBot/src/constants"
 	"feedbackBot/src/models"
 	users2 "feedbackBot/src/users"
 	"strconv"
@@ -24,14 +24,14 @@ func ParseInputUser(input string) (*models.User, error) {
 	}
 
 	if len(input) < 2 {
-		return nil, messages.UserInvalid
+		return nil, constants.UserInvalid
 	}
 
 	if input[0] == '#' && input[1] == 'u' {
 		userId, err := strconv.ParseInt(input[2:], 10, 64)
 
 		if err != nil {
-			return nil, messages.UserIdInvalid
+			return nil, constants.UserIdInvalid
 		}
 
 		user, err := users2.GetUserById(userId)
@@ -55,5 +55,5 @@ func ParseInputUser(input string) (*models.User, error) {
 		return user, nil
 	}
 
-	return nil, messages.UserInvalid
+	return nil, constants.UserInvalid
 }

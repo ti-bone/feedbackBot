@@ -7,8 +7,8 @@ package commands
 
 import (
 	"errors"
+	"feedbackBot/src/constants"
 	"feedbackBot/src/helpers"
-	"feedbackBot/src/messages"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
@@ -23,7 +23,7 @@ func Unban(b *gotgbot.Bot, ctx *ext.Context) error {
 
 	err = helpers.UnbanUser(user)
 
-	if err != nil && errors.Is(err, messages.UserNotBanned) {
+	if err != nil && errors.Is(err, constants.UserNotBanned) {
 		_, err = ctx.EffectiveMessage.Reply(b, err.Error(), &gotgbot.SendMessageOpts{})
 	} else if err != nil {
 		return err

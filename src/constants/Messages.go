@@ -3,7 +3,7 @@
  * Copyright (c) ti-bone 2023-2024
  */
 
-package messages
+package constants
 
 const Protected = "Protected mode is now %s for #u%d"
 const Enabled = "enabled"

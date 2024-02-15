@@ -6,8 +6,8 @@
 package commands
 
 import (
+	"feedbackBot/src/constants"
 	"feedbackBot/src/helpers"
-	"feedbackBot/src/messages"
 	"feedbackBot/src/notes"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
@@ -18,7 +18,7 @@ func DelNote(b *gotgbot.Bot, ctx *ext.Context) error {
 	args := ctx.Args()
 
 	if len(args) <= 1 {
-		_, err := ctx.EffectiveMessage.Reply(b, messages.NoteIdInvalid.Error(), &gotgbot.SendMessageOpts{})
+		_, err := ctx.EffectiveMessage.Reply(b, constants.NoteIdInvalid.Error(), &gotgbot.SendMessageOpts{})
 		return err
 	}
 
@@ -36,7 +36,7 @@ func DelNote(b *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	_, err = ctx.EffectiveMessage.Reply(b, fmt.Sprintf(messages.NoteDeleted, noteId), &gotgbot.SendMessageOpts{})
+	_, err = ctx.EffectiveMessage.Reply(b, fmt.Sprintf(constants.NoteDeleted, noteId), &gotgbot.SendMessageOpts{})
 
 	return err
 }
