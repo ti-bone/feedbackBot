@@ -7,6 +7,7 @@ package handlers
 
 import (
 	"feedbackBot/src/db"
+	"feedbackBot/src/messages"
 	"feedbackBot/src/models"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
@@ -27,11 +28,25 @@ func Response(b *gotgbot.Bot, ctx *ext.Context) error {
 
 	// If user is not found, return
 	if user.TopicID != 0 && !user.IsBanned {
-		_, err = b.CopyMessage(
+		id, err := b.CopyMessage(
 			user.UserID,
 			ctx.EffectiveChat.Id,
 			ctx.EffectiveMessage.MessageId,
 			&gotgbot.CopyMessageOpts{ProtectContent: user.IsProtected},
+		)
+
+		if err != nil {
+			return err
+		}
+
+		// Save the message identifiers relation
+		return messages.StoreMessage(
+			models.Message{
+				UserID:           user.UserID,
+				UserMessageId:    id.MessageId,
+				SupportMessageId: ctx.EffectiveMessage.MessageId,
+				IsOutgoing:       true,
+			},
 		)
 	}
 

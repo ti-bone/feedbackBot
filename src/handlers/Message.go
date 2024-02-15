@@ -10,6 +10,7 @@ import (
 	"feedbackBot/src/config"
 	"feedbackBot/src/db"
 	"feedbackBot/src/helpers"
+	"feedbackBot/src/messages"
 	"feedbackBot/src/models"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
@@ -65,7 +66,7 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 		}
 
 		// Forward message to the user's topic
-		_, err := b.ForwardMessage(
+		response, err := b.ForwardMessage(
 			config.CurrentConfig.LogsID,
 			ctx.EffectiveChat.Id,
 			ctx.EffectiveMessage.MessageId,
@@ -73,6 +74,17 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 				MessageThreadId: user.TopicID,
 			},
 		)
+
+		message := &models.Message{
+			UserID:        user.UserID,
+			UserMessageId: ctx.EffectiveMessage.MessageId,
+			IsOutgoing:    false,
+		}
+
+		// Call to response may produce panic, because response could be nil, so we check it
+		if response != nil {
+			message.SupportMessageId = response.MessageId
+		}
 
 		var tgErr *gotgbot.TelegramError
 
@@ -86,7 +98,7 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 		// If failed, try to copy message
 		// (can be useful if the user has SCAM flag, Telegram doesn't allow to forward messages from such users
 		if err != nil {
-			_, err = b.CopyMessage(
+			id, err := b.CopyMessage(
 				config.CurrentConfig.LogsID,
 				ctx.EffectiveChat.Id,
 				ctx.EffectiveMessage.MessageId,
@@ -94,10 +106,16 @@ func Message(b *gotgbot.Bot, ctx *ext.Context) error {
 					MessageThreadId: user.TopicID,
 				},
 			)
+
+			message.SupportMessageId = id.MessageId
+
+			if err != nil {
+				return err
+			}
 		}
 
-		// Return error, if any
-		return err
+		// Store message info in DB
+		return messages.StoreMessage(*message)
 	}
 
 	return handleMessage(1)

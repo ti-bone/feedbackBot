@@ -42,5 +42,13 @@ func Init() {
 		panic(fmt.Errorf("failed to auto-migrate notes table: %w", err))
 	}
 
-	log.Println("Auto-migrated notes table, successfully connected to the DB.")
+	log.Println("Auto-migrated notes table.")
+
+	log.Println("Trying to auto-migrate messages table...")
+	err = Connection.AutoMigrate(&models.Message{})
+	if err != nil {
+		panic(fmt.Errorf("failed to auto-migrate messages table: %w", err))
+	}
+
+	log.Println("Auto-migrated messages table, successfully connected to the DB.")
 }
