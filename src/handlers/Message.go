@@ -3,7 +3,7 @@
  * Copyright (c) ti-bone 2023-2024
  */
 
-package botHandlers
+package handlers
 
 import (
 	"errors"

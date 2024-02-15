@@ -3,7 +3,7 @@
  * Copyright (c) ti-bone 2023-2024
  */
 
-package botHandlers
+package handlers
 
 import (
 	"errors"
@@ -15,7 +15,7 @@ import (
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 )
 
-func TopicClosed(b *gotgbot.Bot, ctx *ext.Context) error {
+func TopicReopened(b *gotgbot.Bot, ctx *ext.Context) error {
 	user, err := users.GetUserByTopicId(ctx.EffectiveMessage.MessageThreadId)
 
 	if err != nil && errors.Is(err, constants.UserNotFound) {
@@ -24,15 +24,15 @@ func TopicClosed(b *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	err = helpers.BanUser(user)
+	err = helpers.UnbanUser(user)
 
-	if err != nil && errors.Is(err, constants.UserAlreadyBanned) {
+	if err != nil && errors.Is(err, constants.UserNotBanned) {
 		return nil
 	} else if err != nil {
 		return err
 	}
 
-	helpers.LogMessage(fmt.Sprintf("#u%d has been banned. Reason: topic with user closed.", user.UserID), b)
+	helpers.LogMessage(fmt.Sprintf("Ban lifted from #u%d. Reason: topic with user reopened.", user.UserID), b)
 
 	return nil
 }

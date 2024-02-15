@@ -6,17 +6,17 @@
 package main
 
 import (
-	"feedbackBot/src/botHandlers"
 	"feedbackBot/src/commands"
 	"feedbackBot/src/config"
 	"feedbackBot/src/constants"
 	"feedbackBot/src/db"
+	"feedbackBot/src/handlers"
 	"feedbackBot/src/helpers"
 	"feedbackBot/src/middlewares"
 	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
-	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers"
+	updateHandlers "github.com/PaulSonOfLars/gotgbot/v2/ext/handlers"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers/filters/message"
 	"log"
 	"net/http"
@@ -69,44 +69,44 @@ func main() {
 	updater := ext.NewUpdater(dispatcher, nil)
 
 	// Middleware for syncing user in DB for any update from a user
-	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.All, middlewares.SyncUser), -1)
+	dispatcher.AddHandlerToGroup(updateHandlers.NewMessage(message.All, middlewares.SyncUser), -1)
 
 	/*
 	 * User handlers
 	 */
 
 	// Middleware for language filtering
-	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.Private, middlewares.CheckLanguage), 0)
+	dispatcher.AddHandlerToGroup(updateHandlers.NewMessage(message.Private, middlewares.CheckLanguage), 0)
 
 	// Command handlers
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("start", commands.Start), 0)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("id", commands.Id), 0)
+	dispatcher.AddHandlerToGroup(updateHandlers.NewCommand("start", commands.Start), 0)
+	dispatcher.AddHandlerToGroup(updateHandlers.NewCommand("id", commands.Id), 0)
 
 	// Message handlers
-	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.Private, botHandlers.Message), 0)
+	dispatcher.AddHandlerToGroup(updateHandlers.NewMessage(message.Private, handlers.Message), 0)
 
 	/*
 	 * Admin handlers
 	 */
 
 	// Middleware for admin checking
-	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.All, middlewares.CheckAdmin), 1)
+	dispatcher.AddHandlerToGroup(updateHandlers.NewMessage(message.All, middlewares.CheckAdmin), 1)
 
 	// Command handlers
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("ban", commands.Ban), 1)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("unban", commands.Unban), 1)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("protect", commands.Protect), 1)
+	dispatcher.AddHandlerToGroup(updateHandlers.NewCommand("ban", commands.Ban), 1)
+	dispatcher.AddHandlerToGroup(updateHandlers.NewCommand("unban", commands.Unban), 1)
+	dispatcher.AddHandlerToGroup(updateHandlers.NewCommand("protect", commands.Protect), 1)
 
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("add", commands.AddNote), 1)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("del", commands.DelNote), 1)
-	dispatcher.AddHandlerToGroup(handlers.NewCommand("get", commands.GetNotes), 1)
+	dispatcher.AddHandlerToGroup(updateHandlers.NewCommand("add", commands.AddNote), 1)
+	dispatcher.AddHandlerToGroup(updateHandlers.NewCommand("del", commands.DelNote), 1)
+	dispatcher.AddHandlerToGroup(updateHandlers.NewCommand("get", commands.GetNotes), 1)
 
 	// Topic-related handlers
-	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.TopicReopened, botHandlers.TopicReopened), 1)
-	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.TopicClosed, botHandlers.TopicClosed), 1)
+	dispatcher.AddHandlerToGroup(updateHandlers.NewMessage(message.TopicReopened, handlers.TopicReopened), 1)
+	dispatcher.AddHandlerToGroup(updateHandlers.NewMessage(message.TopicClosed, handlers.TopicClosed), 1)
 
 	// Response handler
-	dispatcher.AddHandlerToGroup(handlers.NewMessage(message.Supergroup, botHandlers.Response), 1)
+	dispatcher.AddHandlerToGroup(updateHandlers.NewMessage(message.Supergroup, handlers.Response), 1)
 
 	err = updater.StartPolling(b, &ext.PollingOpts{
 		DropPendingUpdates: false,
