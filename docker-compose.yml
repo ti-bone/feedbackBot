@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: feedbackbot_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-feedbackBot}
+      POSTGRES_USER: ${POSTGRES_USER:-feedbackBot}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-feedbackBot}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    networks:
+      - feedbackbot_network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-feedbackBot} -d ${POSTGRES_DB:-feedbackBot}",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: feedbackbot_app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./config.json:/app/config.json:ro
+    networks:
+      - feedbackbot_network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  feedbackbot_network:
+    driver: bridge
